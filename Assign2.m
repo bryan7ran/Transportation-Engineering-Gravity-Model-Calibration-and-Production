@@ -170,6 +170,12 @@ row_increment = 0;
   end          
 scatter(rexpF(:,1),rexpF(:,2),0.05)
 
+
+
+
+
+
+
 function powerCost = powerf(i,j,b,Cij)
 powerCost = Cij(i,j)^-b;
 end
