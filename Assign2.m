@@ -109,7 +109,7 @@ end
             
             diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
             diffTij = diffTij.*diffTij;
-            RMSE = sqrt(sum(sum(diffTij)));
+            RMSE = sqrt(sum(sum(diffTij))/1000000);
             
             rpowerF(row_increment,:) = [bValStart,RMSE];
             disp(bValStart)
@@ -163,7 +163,7 @@ row_increment = 0;
             
             diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
             diffTij = diffTij.*diffTij;
-            RMSE = sqrt(sum(sum(diffTij)));
+            RMSE = sqrt(sum(sum(diffTij))/1000000);
             
             rexpF(row_increment,:) = [bValStart,RMSE];
             disp(bValStart)

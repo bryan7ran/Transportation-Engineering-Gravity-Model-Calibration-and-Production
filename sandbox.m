@@ -49,7 +49,7 @@ for i = 2:length(desired_b_search)+1
         
         diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
         diffTij = diffTij.*diffTij;
-        RMSE = sqrt(sum(sum(diffTij)));
+        RMSE = sqrt(sum(sum(diffTij))/1000000);
         
         RMSErecord(i,j) = RMSE;
         
