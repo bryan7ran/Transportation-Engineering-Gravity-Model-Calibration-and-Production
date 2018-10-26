@@ -86,9 +86,8 @@ TPTA = numParking;
 % For the length of this new variable...
 for i = 1:length(TPTA)
     % Define trip productions by each zone as the sum of each column in a
-    % row of the original Tij matrix
+    % row
     TPTA(i,2) = sum(numObsTij(i+1,2:end)); % Oi
-    % Similar for trip attractions
     TPTA(i,3) = sum(numObsTij(2:end,i+1)); % Dj
     
 end
