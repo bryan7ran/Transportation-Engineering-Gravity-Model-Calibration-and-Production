@@ -1,3 +1,6 @@
+% Prepare top exponential function analysis similar to power function and
+% exponential function
+
 row_increment = 0;
 desired_b_search = [-5,5];
 desired_a_search = [-5,5];

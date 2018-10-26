@@ -110,7 +110,7 @@ for bValStart = -3:0.01:3
         for i = 2:length(Cij)
             sigma = 0;
             for j = 2:length(Cij)
-                sigma = sigma + balB(j-1) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
+                sigma = sigma + balB(j-1) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij);
             end
             balA(i-1) = 1/sigma;
         end
@@ -119,7 +119,7 @@ for bValStart = -3:0.01:3
         for i = 2:length(Cij)
             sigma = 0;
             for j = 2:length(Cij)
-                sigma = sigma + balA(j-1) * TPTA(j-1,2) * powerf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
+                sigma = sigma + balA(j-1) * TPTA(j-1,2) * powerf(i,j,bValStart,Cij);
             end
             balB(i-1) = 1/sigma;
         end
@@ -134,6 +134,9 @@ for bValStart = -3:0.01:3
     numObsTij(2:101,102) = balA;
     numObsTij(102,2:101) = balB;
     
+    clear i
+    clear j
+    
     % Calculate trip interchanges
     for i = 2:length(Cij)
         for j = 2:length(Cij)
@@ -141,10 +144,15 @@ for bValStart = -3:0.01:3
         end
     end
     
+    % Create a matrix that determines the difference between estimated and
+    % observed
     diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
+    % Perform array multiplication to square the value
     diffTij = diffTij.*diffTij;
+    % Determine RMSE
     RMSE = sqrt(sum(sum(diffTij))/1000000);
     
+    % Record the RMSE for each b-value
     rpowerF(row_increment,:) = [bValStart,RMSE];
     disp(bValStart)
 end
@@ -153,6 +161,8 @@ end
 %     end
 %     disp(master)
 % end
+
+% Plot command readied
 scatter(rpowerF(:,1),rpowerF(:,2),0.05)
 
 row_increment = 0;

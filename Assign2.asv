@@ -100,16 +100,17 @@ for bValStart = -3:0.01:3
     % With every iteration on the for loop, the row record will increment
     % by 1
     row_increment = row_increment + 1;
-    % Balacing factors pre-allocation for 100 zones (B 
+    % Balacing factors pre-allocation for 100 zones (B assume 1 to start)
     balA = zeros(1,100);
     balB = ones(1,100);
     
-    % Calculate A based on B
+    % Calculate A based on B for NIter iterations
     for Iter = 1:NIter
+        % Calculate for each row
         for i = 2:length(Cij)
             sigma = 0;
             for j = 2:length(Cij)
-                sigma = sigma + balB(j-1) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
+                sigma = sigma + balB(j-1) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij);
             end
             balA(i-1) = 1/sigma;
         end
@@ -118,27 +119,35 @@ for bValStart = -3:0.01:3
         for i = 2:length(Cij)
             sigma = 0;
             for j = 2:length(Cij)
-                sigma = sigma + balA(j-1) * TPTA(j-1,2) * powerf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
+                sigma = sigma + balA(j-1) * TPTA(j-1,2) * powerf(i,j,bValStart,Cij);
             end
             balB(i-1) = 1/sigma;
         end
         
     end
     
-    % append
+    % Transpose the A balancing factor so that it's compatible with Tij
+    % integration
     balA = balA';
+    
+    % Append to the end of the Tij matrix
     numObsTij(2:101,102) = balA;
     numObsTij(102,2:101) = balB;
     
-    % Calculate trip interchanges
+    clear i
+    clear j
     
+    % Calculate trip interchanges
     for i = 2:length(Cij)
         for j = 2:length(Cij)
             newTij(i,j) = balA(i-1) * balB(j-1) * TPTA(i-1,2) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij);
         end
     end
     
+    % Create a matrix that determines the difference between estimated and
+    % observed
     diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
+    % Perform array multiplication to square the 
     diffTij = diffTij.*diffTij;
     RMSE = sqrt(sum(sum(diffTij))/1000000);
     
