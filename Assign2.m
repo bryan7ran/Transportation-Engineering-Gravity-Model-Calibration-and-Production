@@ -26,7 +26,7 @@ costTT(1,:) = TAZ_header;
 costTT(:,1) = TAZ_col;
 
 % Make another cost matrix
-costVeh = numDist * valueVeh; % Distance in kilometres multiplied by cost per km = cost 
+costVeh = numDist * valueVeh; % Distance in kilometres multiplied by cost per km = cost
 costVeh(1,:) = TAZ_header;
 costVeh(:,1) = TAZ_col;
 
@@ -90,56 +90,64 @@ for i = 1:length(TPTA)
     TPTA(i,2) = sum(numObsTij(i+1,2:end)); % Oi
     % Similar for trip attractions
     TPTA(i,3) = sum(numObsTij(2:end,i+1)); % Dj
-    
 end
 
-  row_increment = 0;
-  for bValStart = -3:0.01:3
-      row_increment = row_increment + 1;
-            balA = zeros(1,100);
-            balB = ones(1,100);
-            
-            % Calculate A based on B
-            for Iter = 1:NIter
-                for i = 2:length(Cij)
-                    sigma = 0;
-                    for j = 2:length(Cij)
-                        sigma = sigma + balB(j-1) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
-                    end
-                    balA(i-1) = 1/sigma;
-                end
-                
-                % Calculate B based on A
-                for i = 2:length(Cij)
-                    sigma = 0;
-                    for j = 2:length(Cij)
-                        sigma = sigma + balA(j-1) * TPTA(j-1,2) * powerf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
-                    end
-                    balB(i-1) = 1/sigma;
-                end
-                
+% Start an incrementing value such that we can begin to populate an RMSE v.
+% b-value results matrix
+row_increment = 0;
+% Test left and right intervals for b-value here (say 3)
+for bValStart = -3:0.01:3
+    % With every iteration on the for loop, the row record will increment
+    % by 1
+    row_increment = row_increment + 1;
+    % Balacing factors pre-allocation for 100 zones (B assume 1 to start)
+    balA = zeros(1,100);
+    balB = ones(1,100);
+    
+    % Calculate A based on B for NIter iterations
+    for Iter = 1:NIter
+        % Calculate for each row
+        for i = 2:length(Cij)
+            sigma = 0;
+            for j = 2:length(Cij)
+                sigma = sigma + balB(j-1) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
             end
-            
-            % append
-            balA = balA';
-            numObsTij(2:101,102) = balA;
-            numObsTij(102,2:101) = balB;
-            
-            % Calculate trip interchanges
-            
-            for i = 2:length(Cij)
-                for j = 2:length(Cij)
-                    newTij(i,j) = balA(i-1) * balB(j-1) * TPTA(i-1,2) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij);
-                end
+            balA(i-1) = 1/sigma;
+        end
+        
+        % Calculate B based on A
+        for i = 2:length(Cij)
+            sigma = 0;
+            for j = 2:length(Cij)
+                sigma = sigma + balA(j-1) * TPTA(j-1,2) * powerf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
             end
-            
-            diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
-            diffTij = diffTij.*diffTij;
-            RMSE = sqrt(sum(sum(diffTij))/1000000);
-            
-            rpowerF(row_increment,:) = [bValStart,RMSE];
-            disp(bValStart)
-  end          
+            balB(i-1) = 1/sigma;
+        end
+        
+    end
+    
+    % Transpose the A balancing factor so that it's compatible with Tij
+    % integration
+    balA = balA';
+    
+    % Append to the end of the Tij matrix
+    numObsTij(2:101,102) = balA;
+    numObsTij(102,2:101) = balB;
+    
+    % Calculate trip interchanges
+    for i = 2:length(Cij)
+        for j = 2:length(Cij)
+            newTij(i,j) = balA(i-1) * balB(j-1) * TPTA(i-1,2) * TPTA(j-1,3) * powerf(i,j,bValStart,Cij);
+        end
+    end
+    
+    diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
+    diffTij = diffTij.*diffTij;
+    RMSE = sqrt(sum(sum(diffTij))/1000000);
+    
+    rpowerF(row_increment,:) = [bValStart,RMSE];
+    disp(bValStart)
+end
 %         end
 %         disp('sheperds boy')
 %     end
@@ -148,52 +156,52 @@ end
 scatter(rpowerF(:,1),rpowerF(:,2),0.05)
 
 row_increment = 0;
-  for bValStart = -3:0.01:3
-      row_increment = row_increment + 1;
-            balA = zeros(1,100);
-            balB = ones(1,100);
-            
-            % Calculate A based on B
-            for Iter = 1:NIter
-                for i = 2:length(Cij)
-                    sigma = 0;
-                    for j = 2:length(Cij)
-                        sigma = sigma + balB(j-1) * TPTA(j-1,3) * expf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
-                    end
-                    balA(i-1) = 1/sigma;
-                end
-                
-                % Calculate B based on A
-                for i = 2:length(Cij)
-                    sigma = 0;
-                    for j = 2:length(Cij)
-                        sigma = sigma + balA(j-1) * TPTA(j-1,2) * expf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
-                    end
-                    balB(i-1) = 1/sigma;
-                end
-                
+for bValStart = -3:0.01:3
+    row_increment = row_increment + 1;
+    balA = zeros(1,100);
+    balB = ones(1,100);
+    
+    % Calculate A based on B
+    for Iter = 1:NIter
+        for i = 2:length(Cij)
+            sigma = 0;
+            for j = 2:length(Cij)
+                sigma = sigma + balB(j-1) * TPTA(j-1,3) * expf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
             end
-            
-            % append
-            balA = balA';
-            numObsTij(2:101,102) = balA;
-            numObsTij(102,2:101) = balB;
-            
-            % Calculate trip interchanges
-            
-            for i = 2:length(Cij)
-                for j = 2:length(Cij)
-                    newTij(i,j) = balA(i-1) * balB(j-1) * TPTA(i-1,2) * TPTA(j-1,3) * expf(i,j,bValStart,Cij);
-                end
+            balA(i-1) = 1/sigma;
+        end
+        
+        % Calculate B based on A
+        for i = 2:length(Cij)
+            sigma = 0;
+            for j = 2:length(Cij)
+                sigma = sigma + balA(j-1) * TPTA(j-1,2) * expf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
             end
-            
-            diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
-            diffTij = diffTij.*diffTij;
-            RMSE = sqrt(sum(sum(diffTij))/1000000);
-            
-            rexpF(row_increment,:) = [bValStart,RMSE];
-            disp(bValStart)
-  end          
+            balB(i-1) = 1/sigma;
+        end
+        
+    end
+    
+    % append
+    balA = balA';
+    numObsTij(2:101,102) = balA;
+    numObsTij(102,2:101) = balB;
+    
+    % Calculate trip interchanges
+    
+    for i = 2:length(Cij)
+        for j = 2:length(Cij)
+            newTij(i,j) = balA(i-1) * balB(j-1) * TPTA(i-1,2) * TPTA(j-1,3) * expf(i,j,bValStart,Cij);
+        end
+    end
+    
+    diffTij = newTij(2:101,2:101) - numObsTij(2:101,2:101);
+    diffTij = diffTij.*diffTij;
+    RMSE = sqrt(sum(sum(diffTij))/1000000);
+    
+    rexpF(row_increment,:) = [bValStart,RMSE];
+    disp(bValStart)
+end
 scatter(rexpF(:,1),rexpF(:,2),0.05)
 
 
