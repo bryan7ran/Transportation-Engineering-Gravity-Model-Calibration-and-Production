@@ -4,8 +4,8 @@
 row_increment = 0;
 
 % Define search intervals
-desired_b_search = [0.33,0.37];
-desired_a_search = [0.13,0.17];
+desired_b_search = [0.353,0.354];
+desired_a_search = [0.153,0.154];
 
 % Define search increment
 increment = 0.001;

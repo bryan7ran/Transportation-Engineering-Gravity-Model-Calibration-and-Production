@@ -2,7 +2,7 @@
 clear
 clc
 
-%% Run this is the .mat file in line 14 is lost
+%% Run. This is the .mat file in line 14 is lost
 % [numObsTij,~,~] = xlsread('Assign2Data.xlsx','ObsTij');
 % [numTT,~,~] = xlsread('Assign2Data.xlsx','AutoTTmin');
 % [numDist,~,~] = xlsread('Assign2Data.xlsx','AutoDistkm');
@@ -176,7 +176,7 @@ for bValStart = 0.25:0.001:0.3
         for i = 2:length(Cij)
             sigma = 0;
             for j = 2:length(Cij)
-                sigma = sigma + balB(j-1) * TPTA(j-1,3) * expf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
+                sigma = sigma + balB(j-1) * TPTA(j-1,3) * expf(i,j,bValStart,Cij);
             end
             balA(i-1) = 1/sigma;
         end
@@ -185,7 +185,7 @@ for bValStart = 0.25:0.001:0.3
         for i = 2:length(Cij)
             sigma = 0;
             for j = 2:length(Cij)
-                sigma = sigma + balA(j-1) * TPTA(j-1,2) * expf(i,j,bValStart,Cij); %check balA here and balB here BRYAN AND TPTA HOLY
+                sigma = sigma + balA(j-1) * TPTA(j-1,2) * expf(i,j,bValStart,Cij);
             end
             balB(i-1) = 1/sigma;
         end
