@@ -4,11 +4,11 @@
 row_increment = 0;
 
 % Define search intervals
-desired_b_search = [-5,5];
-desired_a_search = [-5,5];
+desired_b_search = [0.33,0.37];
+desired_a_search = [0.13,0.17];
 
 % Define search increment
-increment = 0.05;
+increment = 0.001;
 
 % Set the interval and increment
 desired_b_search = desired_b_search(1):increment:desired_b_search(2);
@@ -64,8 +64,9 @@ for i = 2:length(desired_b_search)+1
         
     end
 end
-
+xlswrite('file.xlsx',RMSErecord)
 function topexpCost = topexpf(i,j,a,b,Cij)
 topexpCost = (Cij(i,j).^a)*exp(-b*Cij(i,j));
 end
 % RMSErecord(i,j) = rand(1);
+

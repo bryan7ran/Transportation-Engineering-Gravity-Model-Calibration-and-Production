@@ -1,7 +1,7 @@
-powerb = 0.01;
-expb = 0.01;
-topexpa = 0.01;
-topexpb = 0.01;
+powerb = 0.373;
+expb = 0.2665;
+topexpa = 0.154;
+topexpb = 0.354;
 
 newTij(2:end,2:end) = [0];
 finalTij_power = newTij;
@@ -47,7 +47,11 @@ end
 
 for i = 2:length(finalTij_power)
     for j = 2:length(finalTij_power)
-        finalTij_power(i,j) = 
+        finalTij_power(i,j) = balA_power(i-1) * balB_power(j-1) * TPTA (i-1,2) * TPTA(j-1,3) * powerf(i,j,powerb,Cij);
+        finalTij_exp(i,j) = balA_exp(i-1) * balB_exp(j-1) * TPTA(i-1,2) * TPTA(j-1,3) * expf(i,j,expb,Cij);
+        finalTij_topexp(i,j) = balA_topexp(i-1) * balB_topexp(j-1) * TPTA(i-1,2) * TPTA(j-1,3) * topexpf(i,j,topexpa,topexpb,Cij);
+    end
+end
 
 
 function powerCost = powerf(i,j,b,Cij)

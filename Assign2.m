@@ -16,9 +16,9 @@ load('Assign2Data')
 disp('import done')
 
 %% Parameters
-VOT = 15; % Mode value of time in dollars
+VOT = 33.82; % Mode value of time in dollars per hour
 VOT = VOT/60; % Convert to cost per minute
-valueVeh = 0.55; % Value of vehicle travel time per kilometre
+valueVeh = 0.2245; % Value of vehicle travel time per kilometre
 
 % Make a new cost matrix
 costTT = numTT * VOT; % Travel time in minutes multiplied by cost per minute = cost
@@ -96,7 +96,7 @@ end
 % b-value results matrix
 row_increment = 0;
 % Test left and right intervals for b-value here (say 3)
-for bValStart = -3:0.01:3
+for bValStart = 0.33:0.001:0.4
     % With every iteration on the for loop, the row record will increment
     % by 1
     row_increment = row_increment + 1;
@@ -166,7 +166,7 @@ end
 scatter(rpowerF(:,1),rpowerF(:,2),0.05)
 
 row_increment = 0;
-for bValStart = -3:0.01:3
+for bValStart = 0.25:0.001:0.3
     row_increment = row_increment + 1;
     balA = zeros(1,100);
     balB = ones(1,100);
